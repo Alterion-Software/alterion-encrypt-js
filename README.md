@@ -14,7 +14,9 @@
 [![ESM + CJS](https://img.shields.io/badge/ESM%20%2B%20CJS-dual%20build-green?style=flat)](https://nodejs.org/api/esm.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Alterion--Software-181717?style=flat&logo=github&logoColor=white)](https://github.com/Alterion-Software)
 
-_The JavaScript/TypeScript client-side counterpart to [alterion-encrypt](https://github.com/Alterion-Software/alterion-encrypt) — X25519 ECDH key exchange, AES-256-GCM session encryption, and a MessagePack + Deflate request/response pipeline, all in a framework-agnostic package._
+_The JavaScript/TypeScript **frontend/client-side** counterpart to [alterion-encrypt](https://github.com/Alterion-Software/alterion-encrypt) — X25519 ECDH key exchange, AES-256-GCM session encryption, and a MessagePack + Deflate request/response pipeline, all in a framework-agnostic package._
+
+> **Frontend only.** This package is intended for use in browser environments and client-side runtimes. The server-side implementation lives in the [alterion-encrypt Rust crate](https://github.com/Alterion-Software/alterion-encrypt). Do not use this package as a server-side encryption backend.
 
 ---
 
@@ -25,7 +27,7 @@ _The JavaScript/TypeScript client-side counterpart to [alterion-encrypt](https:/
 Each request to the server is packaged as a `Request`:
 
 ```
-Client → Request { data: AES-256-GCM ciphertext, wrapped_key, client_pk: ephemeral X25519, key_id, ts }
+Client → Request { data: AES-256-GCM ciphertext, kx, client_pk: ephemeral X25519, key_id, ts }
 ```
 
 **Request path** (`buildRequestPacket`):
@@ -33,8 +35,8 @@ Client → Request { data: AES-256-GCM ciphertext, wrapped_key, client_pk: ephem
 2. Generate a random 32-byte AES-256 `enc_key` per request.
 3. AES-256-GCM encrypt the payload with `enc_key`.
 4. Generate an ephemeral X25519 key pair, perform ECDH against the server's public key.
-5. Derive a `wrap_key` via HKDF-SHA256, use it to AES-GCM wrap `enc_key` → `wrapped_key`.
-6. Encode a `Request { data, wrapped_key, client_pk, key_id, ts }` with MessagePack.
+5. Derive a `wrap_key` via HKDF-SHA256, use it to AES-GCM wrap `enc_key` → `kx`.
+6. Encode a `Request { data, kx, client_pk, key_id, ts }` with MessagePack.
 7. Store `enc_key` client-side keyed by request ID — it is never sent in plaintext.
 
 **Response path** (`decodeResponsePacket`):
@@ -197,17 +199,17 @@ Any JSON-serialisable value
   Ephemeral X25519 keygen  ──→  ECDH(client_sk, server_pk)  ──→  HKDF-SHA256  ──→  wrap_key
         │
         ▼
-  AES-256-GCM wrap enc_key  (wrap_key)  ──→  wrapped_key
+  AES-256-GCM wrap enc_key  (wrap_key)  ──→  kx
         │
         ▼
-  Request { data, wrapped_key, client_pk, key_id, ts }
+  Request { data, kx, client_pk, key_id, ts }
         │
         ▼
   MessagePack encode  ──→  wire bytes  ──→  sent to server
 ```
 
 `enc_key` is returned to the caller and must be stored client-side (e.g. keyed by request ID).
-`wrapped_key` lets the server recover `enc_key` via ECDH without it ever appearing in plaintext on the wire.
+`kx` lets the server recover `enc_key` via ECDH without it ever appearing in plaintext on the wire.
 
 ### Server response (`decodeResponsePacket`)
 
