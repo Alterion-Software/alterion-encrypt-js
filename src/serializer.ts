@@ -7,23 +7,21 @@ import { aesEncrypt, aesDecrypt } from "./crypt.js";
 import { compress, decompress } from "./compress.js";
 import { deriveWrapKey, deriveResponseMacKey } from "./keys.js";
 
-/** Outgoing encrypted request packet — mirrors the `Request` struct in the Rust crate. */
+/**
+ * Wire-format request packet sent to the server — mirrors the `Request` struct in the Rust crate.
+ * @internal For frontend/client-side use only via {@link buildRequestPacket}.
+ */
 export interface Request {
-    data:        Uint8Array;
-    /** Client's randomly-generated AES-256 key, AES-GCM wrapped with the ECDH-derived wrap key. */
-    wrapped_key: Uint8Array;
-    /** Client's ephemeral X25519 public key (32 bytes). */
-    client_pk:   Uint8Array;
-    key_id:      string;
-    /** Unix timestamp (seconds). Validated server-side within ±30 seconds. */
-    ts:          number;
+    data:      Uint8Array;
+    kx:        Uint8Array;
+    client_pk: Uint8Array;
+    key_id:    string;
+    ts:        number;
 }
 
-/** Encrypted response packet — mirrors the `Response` struct in the Rust crate. */
+/** Encrypted response packet received from the server — mirrors the `Response` struct in the Rust crate. */
 export interface Response {
-    /** AES-256-GCM ciphertext (nonce prepended). */
     payload: Uint8Array;
-    /** HMAC-SHA256 over `payload`, keyed with the mac key derived from `enc_key`. */
     hmac:    Uint8Array;
 }
 
@@ -53,14 +51,14 @@ export async function buildRequestPacket(
     const clientPk     = x25519.getPublicKey(clientSk);
     const sharedSecret = x25519.getSharedSecret(clientSk, serverPk);
     const wrapKey      = deriveWrapKey(sharedSecret, clientPk, serverPk);
-    const wrappedKey   = aesEncrypt(encKey, wrapKey);
+    const kx = aesEncrypt(encKey, wrapKey);
 
     const packet: Request = {
-        data:        encrypted,
-        wrapped_key: wrappedKey,
-        client_pk:   clientPk,
-        key_id:      keyId,
-        ts:          Math.floor(Date.now() / 1000),
+        data:      encrypted,
+        kx,
+        client_pk: clientPk,
+        key_id:    keyId,
+        ts:        Math.floor(Date.now() / 1000),
     };
 
     return { wireBytes: encode(packet) as Uint8Array, encKey };
