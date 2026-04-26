@@ -25,9 +25,6 @@
   "devDependencies": {
     "typescript": "^6.0.3"
   },
-  "overrides": {
-    "picomatch": ">=4.0.4"
-  },
   "exports": {
     ".": {
       "import": {
