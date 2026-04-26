@@ -6,7 +6,7 @@
   "author": "Alterion Software",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Alterion-Software/alterion-encrypt-js"
+    "url": "git+https://github.com/Alterion-Software/alterion-encrypt-js.git"
   },
   "type": "module",
   "scripts": {

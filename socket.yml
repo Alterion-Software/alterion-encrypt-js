@@ -1,0 +1,5 @@
+version: 2
+project:
+  issueRules:
+    cryptography: ignore
+    high-entropy-string: ignore
