@@ -8,9 +8,9 @@
 
 <div align="center">
 
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![npm](https://img.shields.io/npm/v/alterion-encrypt.svg)](https://www.npmjs.com/package/alterion-encrypt)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.x-blue?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![ESM + CJS](https://img.shields.io/badge/ESM%20%2B%20CJS-dual%20build-green?style=flat)](https://nodejs.org/api/esm.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Alterion--Software-181717?style=flat&logo=github&logoColor=white)](https://github.com/Alterion-Software)
 
@@ -254,7 +254,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Open an issue before writing any code.
 
 ## License
 
-GNU General Public License v3.0 — see [LICENSE](LICENSE).
+Apache License 2.0 — see [LICENSE](LICENSE).
 
 ---
 
