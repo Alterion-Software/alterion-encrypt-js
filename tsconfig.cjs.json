@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module":            "CommonJS",
+    "moduleResolution":  "bundler",
+    "outDir":            "./dist/commonjs",
+    "rootDir":           "./src"
+  }
+}

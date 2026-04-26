@@ -1,6 +1,6 @@
 {
   "name": "alterion-encrypt",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "X25519 ECDH key exchange, AES-256-GCM session encryption, and a MessagePack + Deflate request/response pipeline — framework-agnostic client-side counterpart to the alterion-encrypt Rust crate.",
   "license": "Apache-2.0",
   "author": "Alterion Software",
@@ -10,17 +10,8 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tshy",
+    "build": "node build.mjs",
     "prepublishOnly": "npm run build"
-  },
-  "tshy": {
-    "exports": {
-      ".": "./src/index.ts"
-    },
-    "dialects": [
-      "esm",
-      "commonjs"
-    ]
   },
   "files": [
     "dist"
@@ -32,7 +23,6 @@
     "@noble/hashes": "^2.0.0"
   },
   "devDependencies": {
-    "tshy": "^4.1.1",
     "typescript": "^6.0.3"
   },
   "overrides": {
