@@ -1,4 +1,4 @@
-import { encode, decode } from "@msgpack/msgpack";
+import { pack as encode, unpack as decode } from "msgpackr";
 import { x25519 } from "@noble/curves/ed25519.js";
 import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
