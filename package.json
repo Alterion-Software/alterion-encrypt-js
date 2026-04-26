@@ -9,24 +9,22 @@
     "url": "https://github.com/Alterion-Software/alterion-encrypt-js"
   },
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+  "scripts": {
+    "build": "tshy",
+    "prepublishOnly": "npm run build"
+  },
+  "tshy": {
+    "exports": {
+      ".": "./src/index.ts"
+    },
+    "dialects": [
+      "esm",
+      "commonjs"
+    ]
   },
   "files": [
     "dist"
   ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "prepublishOnly": "npm run build"
-  },
   "dependencies": {
     "@noble/ciphers": "^2.1.0",
     "@noble/curves": "^2.0.0",
@@ -34,10 +32,25 @@
     "msgpackr": "^1.11.10"
   },
   "devDependencies": {
-    "tsup": "^8.0.0",
+    "tshy": "^4.1.1",
     "typescript": "~5.9.0"
   },
   "overrides": {
     "picomatch": ">=4.0.4"
-  }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
+  "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "module": "./dist/esm/index.js"
 }
