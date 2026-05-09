@@ -11,7 +11,7 @@
 
 If you discover a security vulnerability in `alterion-encrypt`, **please do not open a public GitHub issue.**
 
-Report it privately by emailing:
+Please report it privately by emailing:
 
 **security@alterion.dpdns.org**
 
