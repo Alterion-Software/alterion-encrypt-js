@@ -263,7 +263,7 @@ Apache License 2.0 — see [LICENSE](LICENSE).
 **Made with ❤️ by the Alterion Software team**
 
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.com/invite/3gy9gJyJY8)
-[![Website](https://img.shields.io/badge/Website-Coming%20Soon-blue?style=flat&logo=globe&logoColor=white)](.)
+[![Website](https://img.shields.io/badge/Website-alterion.dppdns.org%20/coraldune.org-blue?style=flat&logo=globe&logoColor=white)](https://alterion.dpdns.org)
 [![GitHub](https://img.shields.io/badge/GitHub-Alterion--Software-181717?style=flat&logo=github&logoColor=white)](https://github.com/Alterion-Software)
 
 </div>
