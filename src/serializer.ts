@@ -2,7 +2,14 @@ import { encode, decode } from "@msgpack/msgpack";
 import { x25519 } from "@noble/curves/ed25519.js";
 import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { randomBytes, equalBytes } from "@noble/hashes/utils.js";
+import { randomBytes } from "@noble/hashes/utils.js";
+
+function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
+    if (a.length !== b.length) return false;
+    let diff = 0;
+    for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+    return diff === 0;
+}
 import { aesEncrypt, aesDecrypt } from "./crypt.js";
 import { compress, decompress } from "./compress.js";
 import { deriveWrapKey, deriveResponseMacKey } from "./keys.js";
