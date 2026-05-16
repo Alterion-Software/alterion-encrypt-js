@@ -2,7 +2,7 @@ import { encode, decode } from "@msgpack/msgpack";
 import { x25519 } from "@noble/curves/ed25519.js";
 import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { randomBytes } from "@noble/hashes/utils.js";
+import { randomBytes, equalBytes } from "@noble/hashes/utils.js";
 import { aesEncrypt, aesDecrypt } from "./crypt.js";
 import { compress, decompress } from "./compress.js";
 import { deriveWrapKey, deriveResponseMacKey } from "./keys.js";
@@ -67,13 +67,14 @@ export async function buildRequestPacket(
 /** Verifies and decodes a server {@link Response} using the `enc_key` returned by
  *  {@link buildRequestPacket}.
  *
- *  Pipeline: msgpack → `Response` → HMAC-SHA256 verify → AES-256-GCM decrypt →
+ *  Pipeline: msgpack → `Response` → HMAC-SHA256 verify (constant-time) → AES-256-GCM decrypt →
  *  msgpack → deflate decompress → JSON → `T`.
  *
  *  Throws if the HMAC is invalid or decryption fails.
  *
  *  @param wireBytes  Raw bytes received from the server.
- *  @param encKey     The AES key returned by the matching {@link buildRequestPacket} call. */
+ *  @param encKey     The AES session key returned by the matching {@link buildRequestPacket} call.
+ *                    **This array is zeroed after use** — do not reference it after calling this function. */
 export async function decodeResponsePacket<T = unknown>(
     wireBytes: Uint8Array,
     encKey:    Uint8Array,
@@ -82,14 +83,16 @@ export async function decodeResponsePacket<T = unknown>(
     const macKey   = deriveResponseMacKey(encKey);
     const expected = hmac(sha256, macKey, response.payload);
 
-    let isValid = expected.length === response.hmac.length;
-    for (let i = 0; i < expected.length; i++) {
-        if (expected[i] !== response.hmac[i]) isValid = false;
+    if (!equalBytes(expected, response.hmac)) {
+        throw new Error("Security Alert: Response HMAC verification failed!");
     }
-    if (!isValid) throw new Error("Response HMAC verification failed");
 
     const decrypted    = aesDecrypt(response.payload, encKey);
     const compressed   = decode(decrypted) as Uint8Array;
     const decompressed = await decompress(compressed);
+
+    macKey.fill(0);
+    encKey.fill(0);
+
     return JSON.parse(new TextDecoder().decode(decompressed)) as T;
 }
